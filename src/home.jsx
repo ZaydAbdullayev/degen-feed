@@ -3,11 +3,21 @@ import "./home.css";
 import { Button, Button2 } from "./components/button.components";
 import { RiTwitterXFill } from "react-icons/ri";
 import Message from "./components/chat";
-import { fakePosts } from "./context/data";
+import { avatars, fakePosts } from "./context/data";
 
 export function App() {
   const [posts, setPosts] = React.useState(fakePosts);
   const [postText, setPostText] = React.useState("");
+  const info = JSON.parse(localStorage.getItem("user-info"));
+  const [token_prices, setToken_prices] = React.useState([]);
+  const [userInfo, setUserInfo] = React.useState(
+    info?.username
+      ? info
+      : {
+          username: "",
+          avatar: 0,
+        }
+  );
 
   const handlePost = (newPost) => {
     if (newPost.trim() === "") return;
@@ -39,43 +49,77 @@ export function App() {
     return () => clearInterval(interval);
   }, []);
 
+  const createProfile = () => {
+    if (userInfo.username.trim() === "") {
+      alert("Please enter a username");
+      return;
+    }
+    localStorage.setItem("user-info", JSON.stringify(userInfo));
+    window.location.reload();
+  };
+  //sol,btc,eth,xrp
+  useEffect(() => {
+    const fetchTokens = async () => {
+      const res = await fetch(
+        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=solana,bitcoin,ethereum,ripple,dogecoin&order=market_cap_desc&per_page=10&page=1&sparkline=false",
+      );
+      const data = await res.json();
+      const prices = data.map((token) => ({
+        name: token.name,
+        symbol: token.symbol,
+        price: token.current_price,
+        change: token.price_change_percentage_24h,
+      }));
+      setToken_prices(prices);
+    };
+    fetchTokens();
+  }, []);
+
+  console.log(token_prices);
+  
+
   return (
     <div className="app-wrapper">
       <aside className="sidebar">
         <div className="df fdc gap-10 profile">
           <h1>My Profile</h1>
-          <div className="avatar">😎</div>
-          <div className="username">zauzyad</div>
+          <div className="avatar">
+            <img
+              src={
+                userInfo.avatar !== null
+                  ? avatars[userInfo.avatar].src
+                  : "https://via.placeholder.com/150"
+              }
+              alt="Avatar"
+            />
+          </div>
+          <div className="username">info?.username</div>
         </div>
         <div className="friends">
-          <h3>Friends Online</h3>
+          <h3>Users Online</h3>
           <ul className="df fdc gap-20 fs-18">
             <li className="df aic gap-10">
               <b>FO</b>
               <p className="df fdc gap-5">
                 <span>Fooopacbleguy</span>
-                <small>last seen: 10m ago</small>
               </p>
             </li>
             <li className="df aic gap-10">
               <b>RD</b>
               <p className="df fdc gap-5">
                 <span>Rugpull Destroyer</span>
-                <small>last seen: 1h ago</small>
               </p>
             </li>
             <li className="df aic gap-10">
               <b>FR</b>
               <p className="df fdc gap-5">
                 <span>Foobar</span>
-                <small>last seen: 2h ago</small>
               </p>
             </li>
             <li className="df aic gap-10">
               <b>OB</b>
               <p className="df fdc gap-5">
                 <span>Orio Baggins</span>
-                <small>last seen: 3h ago</small>
               </p>
             </li>
             <Button2>See more</Button2>
@@ -84,41 +128,21 @@ export function App() {
         <div className="hot-tokens mt-20">
           <h3>Hot Tokens</h3>
           <ul className="df fdc gap-10 fs-18 mt-10">
-            <li>
-              SOL —{" "}
-              <span style={{ color: "var(--highlight-green)" }}>$63.00</span>
-            </li>
-            <li>
-              USDC — <span> $1.00</span>
-            </li>
-            <li>
-              RAY —{" "}
-              <span style={{ color: "var(--highlight-green)" }}>+15.00%</span>
-            </li>
-            <li>
-              MNDE —{" "}
-              <span style={{ color: "var(--highlight-red)" }}>-5.55%</span>
-            </li>
-            <li>
-              ORCA —{" "}
-              <span style={{ color: "var(--highlight-green)" }}>+3.25%</span>
-            </li>
-            <li>
-              FTT —{" "}
-              <span style={{ color: "var(--highlight-red)" }}>-2.00%</span>
-            </li>
-            <li>
-              BTC —{" "}
-              <span style={{ color: "var(--highlight-green)" }}>+1.50%</span>
-            </li>
-            <li>
-              ETH —{" "}
-              <span style={{ color: "var(--highlight-red)" }}>-0.50%</span>
-            </li>
-            <li>
-              DOGE —{" "}
-              <span style={{ color: "var(--highlight-green)" }}>+0.25%</span>
-            </li>
+            {token_prices.map((token) => (
+              <li key={token.symbol}>
+                {token.name} —{" "}
+                <span
+                  style={{
+                    color:
+                      token.change > 0
+                        ? "var(--highlight-green)"
+                        : "var(--highlight-red)",
+                  }}
+                >
+                  ${token.price.toFixed(2)} ({token.change.toFixed(2)}%)
+                </span>
+              </li>
+            ))}
           </ul>
         </div>
         <div className="w100 df mt-20">
@@ -133,14 +157,9 @@ export function App() {
           <h3>Solana Launchpads & DEXs</h3>
           <marquee behavior="smooth" direction="row">
             <div className="df aic gap-10">
-              <p>Raydium</p>
-              <p>Solcasino</p>
-              <p>Solstarter</p>
-              <p>Solanium</p>
-              <p>Solana Beach</p>
-              <p>Solana Explorer</p>
-              <p>Solana Wallet</p>
-              <p>Solana NFT</p>
+              <p>Pump.fun</p>
+              <p>Bonk</p>
+              <p>Believe</p>
             </div>
           </marquee>
         </div>
@@ -149,14 +168,18 @@ export function App() {
           <h3>Trending</h3>
           <marquee behavior="smooth" direction="row">
             <div className="df aic gap-10">
-              <p>#MEMECOIN</p>
-              <p>#20MFUNDS</p>
-              <p>#TOTHEMOON</p>
-              <p>#SOLANA</p>
-              <p>#ETHEREUM</p>
-              <p>#DOGECOIN</p>
-              <p>#RUGPULL</p>
-              <p>#NFT</p>
+              <p>#MOONDOG</p>
+              <p>#PIZZACOIN</p>
+              <p>#MOONPIG</p>
+              <p>#SOGE</p>
+              <p>#FARTCAT</p>
+              <p>#RUN</p>
+              <p>#KING</p>
+              <p>#GIB</p>
+              <p>#MOONELON</p>
+              <p>#PHDKITTY</p>
+              <p>#BORPA</p>
+              <p>#BASILISK</p>
             </div>
           </marquee>
         </div>
@@ -180,7 +203,7 @@ export function App() {
             {post.image && <img src={post.image} alt="Post" />}
             <div className="w100 df aic jcsb post-actions">
               <span>
-                💬 {post.comments} 👍 {post.likes}
+                💬 {post.comments} 👍 {post.likes.toString().slice(0, 1)}
               </span>
               <small>{post.timestamp}</small>
             </div>
@@ -189,6 +212,42 @@ export function App() {
       </main>
 
       <Message />
+
+      <div
+        className={`df fdc aic modal ${userInfo?.username === "" && "open"}`}
+      >
+        <div className="df fdc aic gap-20 modal-content">
+          <h1>Create your Profile</h1>
+          <div className="df fdc gap-10 ">
+            <input
+              type="text"
+              placeholder="Username"
+              value={userInfo.username}
+              onChange={(e) =>
+                setUserInfo({ ...userInfo, username: e.target.value })
+              }
+            />
+            <div className="avatars">
+              {avatars.map((avatar) => (
+                <div
+                  className={`avatar ${
+                    userInfo.avatar === avatar.id && "active"
+                  }`}
+                  key={avatar.id}
+                  onClick={() => {
+                    setUserInfo({ ...userInfo, avatar: avatar.id });
+                  }}
+                >
+                  <img src={avatar.src} alt="Avatar" />
+                </div>
+              ))}
+            </div>
+            <div className="df aic jcsb">
+              <Button2 onClick={createProfile}>Submit</Button2>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
