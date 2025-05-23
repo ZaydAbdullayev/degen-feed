@@ -14,8 +14,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: #000000;
-  background: #ffffff;
+  color: #fff;
+  background: #000;
   background-image: linear-gradient(to right, #ff510010 1px, transparent 1px),
     linear-gradient(to bottom, #ff510010 1px, transparent 1px);
   background-size: 1rem 1rem;
