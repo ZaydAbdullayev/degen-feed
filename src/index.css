@@ -10,14 +10,23 @@
 }
 
 :root {
+  --bg-dark: #0d0d0d;
+  --text-light: #e0e0e0;
+  --highlight-purple: #a78bfa;
+  --highlight-green: #74e49d;
+  --highlight-blue: #3b82f6;
+  --highlight-red: #f87171;
+  --card-dark: #1a1a1a;
+  --border: #2a2a2a;
+
   line-height: 1.2;
   font-weight: 400;
 
   color-scheme: light dark;
   color: #fff;
-  background: #000;
-  background-image: linear-gradient(to right, #ff510010 1px, transparent 1px),
-    linear-gradient(to bottom, #ff510010 1px, transparent 1px);
+  background: #0d0d0d;
+  background-image: linear-gradient(to right, #a78bfa04 1px, transparent 1px),
+    linear-gradient(to bottom, #a78bfa04 1px, transparent 1px);
   background-size: 1rem 1rem;
   background-position: center center;
 
@@ -26,6 +35,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--text-light);
+  font-family: 'Inter', sans-serif;
 }
 
 input {
@@ -161,6 +177,31 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .p-v-10 {
   padding: 10px 0;
+}
+
+.mt-5 {
+  margin-top: 5px;
+}
+.mt-10 {
+  margin-top: 10px;
+}
+.mt-15 {
+  margin-top: 15px;
+}
+.mt-20 {
+  margin-top: 20px;
+}
+.mb-5 {
+  margin-bottom: 5px;
+}
+.mb-10 {
+  margin-bottom: 10px;
+}
+.mb-15 {
+  margin-bottom: 15px;
+}
+.mb-20 {
+  margin-bottom: 20px;
 }
 
 .bg {

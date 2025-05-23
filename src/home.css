@@ -1,27 +1,32 @@
-/* App.css */
-
-:root {
-  --bg-dark: #0d0d0d;
-  --text-light: #e0e0e0;
-  --highlight-purple: #a78bfa;
-  --highlight-green: #22c55e;
-  --card-dark: #1a1a1a;
-  --border: #2a2a2a;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  background-color: var(--bg-dark);
-  color: var(--text-light);
-  font-family: 'Inter', sans-serif;
-}
-
 .app-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
   display: grid;
-  grid-template-columns: 240px 1fr 280px;
+  grid-template-columns: 330px 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "aside header header"
+    "aside main main"
+    "aside main main";
   gap: 20px;
   padding: 20px;
+}
+
+aside {
+  grid-area: aside;
+}
+
+header {
+  grid-area: header;
+  background-color: var(--card-dark);
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+main {
+  grid-area: main;
 }
 
 aside,
@@ -30,6 +35,8 @@ main {
   padding: 16px;
   border: 1px solid var(--border);
   border-radius: 8px;
+  height: 100%;
+  overflow-y: auto;
 }
 
 /* Sidebar */
@@ -54,18 +61,42 @@ main {
 .sidebar .username {
   margin-top: 10px;
   font-weight: bold;
+  text-transform: capitalize;
 }
 
 .sidebar .friends ul {
   list-style: none;
   padding: 0;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .sidebar .friends li {
-  margin-bottom: 6px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--highlight-green);
+  padding: 10px;
+  border-radius: 6px;
+  background: #141414;
+  border: 1px solid var(--border);
+  color: #fff;
+
+  b {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--highlight-purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  small {
+    color: #aaa;
+  }
+}
+
+.hot-tokens {
+  margin-top: 50px;
+  flex: 1;
 }
 
 /* Feed */
@@ -127,18 +158,29 @@ main {
 }
 
 /* Right Panel */
-.right-panel ul {
+.right-panel ul,
+.hot-tokens ul {
   list-style: none;
   padding: 0;
 }
 
-.right-panel li {
+.right-panel li,
+.hot-tokens li {
   padding: 6px 0;
   border-bottom: 1px solid var(--border);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
-.right-panel h3 {
+h3 {
   margin-bottom: 8px;
   color: var(--highlight-purple);
+}
+
+.right-panel p {
+  padding: 6px 10px;
+  background: #141414;
+  border: 2px dotted var(--border);
+  border-radius: 6px;
+  color: var(--text-light);
+  margin-bottom: 5px;
 }
