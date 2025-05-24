@@ -8,7 +8,9 @@ import { avatars, fakePosts } from "./context/data";
 export function App() {
   const [posts, setPosts] = React.useState(fakePosts);
   const [postText, setPostText] = React.useState("");
-  const info = JSON.parse(localStorage.getItem("user-info"));
+  const info = JSON.parse(
+    localStorage.getItem("user-info") || '{"username": null}'
+  );
   const [token_prices, setToken_prices] = React.useState([]);
   const [userInfo, setUserInfo] = React.useState(
     info?.username
@@ -41,11 +43,14 @@ export function App() {
           image: prevPosts[Math.floor(Math.random() * prevPosts.length)].image,
           likes: Math.floor(Math.random() * 100),
           comments: Math.floor(Math.random() * 50),
-          timestamp: "Just now",
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
         };
         return [newPost, ...prevPosts];
       });
-    }, 5000);
+    }, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -61,7 +66,7 @@ export function App() {
   useEffect(() => {
     const fetchTokens = async () => {
       const res = await fetch(
-        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=solana,bitcoin,ethereum,ripple,dogecoin&order=market_cap_desc&per_page=10&page=1&sparkline=false",
+        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=solana,bitcoin,ethereum,ripple,dogecoin&order=market_cap_desc&per_page=10&page=1&sparkline=false"
       );
       const data = await res.json();
       const prices = data.map((token) => ({
@@ -74,9 +79,6 @@ export function App() {
     };
     fetchTokens();
   }, []);
-
-  console.log(token_prices);
-  
 
   return (
     <div className="app-wrapper">
@@ -93,7 +95,7 @@ export function App() {
               alt="Avatar"
             />
           </div>
-          <div className="username">info?.username</div>
+          <div className="username">{userInfo?.username}</div>
         </div>
         <div className="friends">
           <h3>Users Online</h3>
@@ -146,7 +148,11 @@ export function App() {
           </ul>
         </div>
         <div className="w100 df mt-20">
-          <Button>
+          <Button
+            onClick={() => {
+              window.open("https://x.com/allinone_tool", "_blank");
+            }}
+          >
             Follow Us <RiTwitterXFill />
           </Button>
         </div>
@@ -189,7 +195,7 @@ export function App() {
 
       {/* Main Feed */}
       <main className="feed">
-        <h1 className="feed-title">Degen Feed</h1>
+        <h1 className="feed-title">DEGEN BOX</h1>
         <textarea
           placeholder="What's on your mind?"
           onChange={(e) => setPostText(e.target.value)}
@@ -213,9 +219,7 @@ export function App() {
 
       <Message />
 
-      <div
-        className={`df fdc aic modal ${userInfo?.username === "" && "open"}`}
-      >
+      <div className={`df fdc aic modal ${!info?.username && "open"}`}>
         <div className="df fdc aic gap-20 modal-content">
           <h1>Create your Profile</h1>
           <div className="df fdc gap-10 ">
